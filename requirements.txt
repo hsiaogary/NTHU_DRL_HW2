@@ -2,3 +2,5 @@ torch
 tqdm
 requests
 argparse
+opencv-python
+numpy
