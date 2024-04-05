@@ -1,7 +1,8 @@
 import numpy as np
 import cv2
 cv2.ocl.setUseOpenCL(False)
-
+import gym
+import random
 import torch
 import torch.nn as nn
 
@@ -40,6 +41,7 @@ class Dueling_DQN(nn.Module):
 class Agent():
     def __init__(self):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.action_space = gym.spaces.Discrete(12)
         self.width = 84
         self.height = 84
         self.q = Dueling_DQN(1, 12, self.device).to(self.device)
@@ -67,10 +69,13 @@ class Agent():
         s = self.wrap(observation)
         s = self.arange(s)
 
-        if self.device == "cpu":
-            return np.argmax(self.q(s).detach().numpy())
+        if random.random() < 0.05:
+            return self.action_space.sample()
         else:
-            return np.argmax(self.q(s).cpu().detach().numpy())
+            if self.device == "cpu":
+                return np.argmax(self.q(s).detach().numpy())
+            else:
+                return np.argmax(self.q(s).cpu().detach().numpy())
 
 
 
