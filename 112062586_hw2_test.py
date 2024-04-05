@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-cv2.ocl.setUseOpenCL(False)
 import gym
 import random
 import torch
@@ -69,13 +68,10 @@ class Agent():
         s = self.wrap(observation)
         s = self.arange(s)
 
-        if random.random() < 0.05:
-            return self.action_space.sample()
+        if self.device == "cpu":
+            return np.argmax(self.q(s).detach().numpy())
         else:
-            if self.device == "cpu":
-                return np.argmax(self.q(s).detach().numpy())
-            else:
-                return np.argmax(self.q(s).cpu().detach().numpy())
+            return np.argmax(self.q(s).cpu().detach().numpy())
 
 
 
