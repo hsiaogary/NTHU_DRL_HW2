@@ -68,10 +68,13 @@ class Agent():
         s = self.wrap(observation)
         s = self.arange(s)
 
-        if self.device == "cpu":
-            return np.argmax(self.q(s).detach().numpy())
+        if random.random() <= 0.01:
+            return self.action_space.sample()
         else:
-            return np.argmax(self.q(s).cpu().detach().numpy())
+            if self.device == "cpu":
+                return np.argmax(self.q(s).detach().numpy())
+            else:
+                return np.argmax(self.q(s).cpu().detach().numpy())
 
 
 
